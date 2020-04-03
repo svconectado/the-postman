@@ -1,0 +1,58 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:9.5.20-alpine
+    env_file:
+      - '.env'
+    volumes:
+      - postgres:/var/lib/postgresql/data
+  redis:
+    image: redis
+    volumes:
+      - redis:/var/lib/redis/data
+  app:
+    build: ./app
+    command: bundle exec rackup -p 9292 --host 0.0.0.0
+    volumes:
+      - ./app:/app
+    env_file:
+      - '.env'
+    ports:
+      - "9292:9292"
+    links:
+      - postgres
+      - redis
+    depends_on:
+      - postgres
+      - redis
+  web:
+    build: ./web
+    links:
+      - postgres
+      - redis
+    depends_on:
+      - app
+      - redis
+    ports:
+      - 80:80
+      - 443:443
+    env_file:
+      - '.env'
+    volumes:
+      - ./web/tmp/www:/var/www/app
+  sidekiq:
+    links:
+      - postgres
+      - redis
+    depends_on:
+      - postgres
+      - redis
+    build: ./worker
+    volumes:
+      - './worker:/worker'
+    env_file:
+      - '.env'
+    command: bundle exec sidekiq -r /worker/workers/svc_postman_worker.rb
+volumes:
+  postgres:
+  redis:

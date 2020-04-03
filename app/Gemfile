@@ -1,0 +1,14 @@
+# Gemfile
+source "https://rubygems.org"
+ruby '2.7.0'
+
+gem "sinatra", "2.0.8.1"
+gem 'sinatra-contrib'
+gem "sinatra-activerecord"
+gem "pg", "1.2.2"
+gem "rake"
+gem 'rack'
+gem 'logger'
+gem 'dotenv'
+gem "rerun", "0.13.0"
+gem "sidekiq"

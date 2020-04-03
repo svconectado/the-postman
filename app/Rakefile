@@ -1,0 +1,5 @@
+require 'dotenv/load'
+require 'yaml'
+require 'logger'
+require 'sinatra/activerecord'
+require 'sinatra/activerecord/rake'
